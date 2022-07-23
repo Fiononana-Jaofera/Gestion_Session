@@ -1,0 +1,25 @@
+input{
+    color: purple !important;
+}
+mat-label{
+    font-size: 1em;
+    font-weight: bold;
+}
+a{
+    text-decoration: none;
+    color: gray;
+    &:hover{
+        text-decoration: underline;
+        color: purple;
+    }
+}
+button:hover{
+    color: purple;
+}
+.mat-input-invalid .mat-input-placeholder {
+    caret-color: rgb(118, 118, 118);
+}
+
+.mat-input-invalid .mat-input-ripple {
+    background: rgb(118, 118, 118);
+}

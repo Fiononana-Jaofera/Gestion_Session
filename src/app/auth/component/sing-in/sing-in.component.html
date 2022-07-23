@@ -1,0 +1,19 @@
+<div class="container-fluid w-100 h-100 d-flex align-items-center bg-secondary">
+    <mat-card [formGroup]="login" class="border rounded-4 container-sm w-50 d-flex flex-column justify-content-center align-items-center h-50">
+        <mat-form-field class=" w-50 my-2" hideRequiredMarker="true"> 
+            <mat-label>Adresse e-mail:</mat-label>
+            <input matInput type="email" formControlName="email">
+            <mat-error *ngIf="login.get('email')?.errors?.['required']">Ce champ est requis</mat-error>
+            <mat-error *ngIf="login.get('email')?.errors?.['email']">Veuillez entrer un email valide</mat-error>
+        </mat-form-field>
+        <mat-form-field class=" w-50 my-2" hideRequiredMarker="true">
+            <mat-label>Mot de passe:</mat-label>
+            <input matInput type="password" formControlName="password">
+            <mat-error *ngIf="login.get('email')?.errors?.['required']">Veuillez saisir votre mot de passe</mat-error>
+        </mat-form-field>
+        <div class="d-flex justify-content-evenly align-items-center w-100">
+            <a href="#" class="my-2">mot de passe oublié?</a><a href="#">Vous n'avez pas de compte?</a>
+        </div>
+        <button type="submit" (click)="onSubmit()" mat-raised-button class="rounded-pill my-2" [disabled]="!login.valid">Se connecter</button>
+    </mat-card>
+</div>

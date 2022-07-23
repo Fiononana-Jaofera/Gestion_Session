@@ -1,0 +1,23 @@
+<div class="container-fluid h-100">
+    <div class="row h-25">
+        <div class="col bg-secondary p-5 d-flex align-items-center">
+            <h1 class="text-white">Bonjour nom prénom</h1>
+        </div>
+    </div>
+    <div class="row h-75 bg-warning">
+        <mat-card class="col-2  p-3">
+            <app-menu></app-menu>
+        </mat-card>
+        <div class="col bg-light p-3">
+            <mat-card class="row container-md h-75 mb-5">
+                <router-outlet></router-outlet>
+            </mat-card>
+            <mat-paginator [length]="100"
+                            [pageSize]="10"
+                             [pageSizeOptions]="[5, 10, 25, 100]"
+                            aria-label = "Select page">
+            </mat-paginator>
+            <button mat-flat-button class="row float-end mr-5 w-25">Ajouter</button>
+        </div>
+    </div>
+</div>
