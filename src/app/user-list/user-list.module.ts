@@ -7,20 +7,20 @@ import { AddComponent } from './components/add/add.component';
 import { SharedModule } from '../shared/shared.module';
 import { CoreModule } from '../core/core.module';
 import { MenuComponent } from '../core/components/menu/menu.component';
-import { ListContentComponent } from './components/list-content/list-content.component';
+import { UserServiceService } from './services/user-service.service';
 
 
 @NgModule({
   declarations: [
     ListComponent,
     AddComponent,
-    ListContentComponent
   ],
   imports: [
     CommonModule,
     UserListRoutingModule,
     SharedModule,
     CoreModule 
-  ]
+  ],
+  providers:[UserServiceService]
 })
 export class UserListModule { }

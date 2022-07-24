@@ -8,12 +8,18 @@
         </mat-form-field>
         <mat-form-field class=" w-50 my-2" hideRequiredMarker="true">
             <mat-label>Mot de passe:</mat-label>
-            <input matInput type="password" formControlName="password">
+            <input matInput [type]="hide? 'password':'text'" formControlName="password">
+            <button 
+                mat-icon-button
+                matSuffix 
+                (click)="hide = !hide"
+            ><mat-icon>{{hide? "visibility_off": "visibility"}}</mat-icon>
+            </button>
             <mat-error *ngIf="login.get('email')?.errors?.['required']">Veuillez saisir votre mot de passe</mat-error>
         </mat-form-field>
-        <div class="d-flex justify-content-evenly align-items-center w-100">
-            <a href="#" class="my-2">mot de passe oublié?</a><a href="#">Vous n'avez pas de compte?</a>
-        </div>
         <button type="submit" (click)="onSubmit()" mat-raised-button class="rounded-pill my-2" [disabled]="!login.valid">Se connecter</button>
+        <div class="d-flex justify-content-between align-items-center w-50">
+            <a href="#" class="my-2">mot de passe oublié?</a><a routerLink="signUp">Vous n'avez pas de compte?</a>
+        </div>
     </mat-card>
 </div>

@@ -12,8 +12,10 @@ export class SingInComponent implements OnInit {
 
   constructor(private fb: FormBuilder) { }
   login!: FormGroup;
+  hide!:boolean
   ngOnInit(): void {
-    this.initForm();
+    this.hide = true
+    this.initForm()
   }
   private initForm(){
     this.login = this.fb.group(

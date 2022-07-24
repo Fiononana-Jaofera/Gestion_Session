@@ -1,1 +1,81 @@
-<p>sign-up works!</p>
+<div class="container-fluid w-100 h-100 d-flex align-items-center bg-secondary">
+    <mat-card [formGroup]="form" class="p-5 container-sm w-75 d-flex flex-column justify-content-center align-items-center">
+        <h2 class="text-secondary">Formulaire d'inscription</h2>
+        <mat-form-field hideRequiredMarker="true" class="w-50 my-2">
+            <mat-label>Nom: </mat-label>
+            <input matInput type="text" formControlName="nom">
+            <mat-error>Ce champ est requis</mat-error>
+        </mat-form-field>
+        <mat-form-field hideRequiredMarker="true" class="w-50 my-2">
+            <mat-label>Prénom: </mat-label>
+            <input matInput type="text" formControlName="prenom">
+            <mat-error>Ce champ est requis</mat-error>
+        </mat-form-field>
+        <mat-form-field hideRequiredMarker="true" class="w-50 my-2">
+            <mat-label>Adresse email: </mat-label>
+            <input matInput type="email" formControlName="email">
+            <mat-error *ngIf="form.get('email')?.errors?.['required']">Ce champ est requis</mat-error>
+            <mat-error *ngIf="form.get('email')?.errors?.['email']">Veuillez entrer une email valide</mat-error>
+        </mat-form-field>
+        <ng-container [formGroup]="mdpForm">
+            <mat-form-field hideRequiredMarker="true" class="w-50 my-2">
+                <mat-label>Mot de passe: </mat-label>
+                <input matInput [type]="hide? 'password' : 'text'" formControlName="mdp">
+                <button 
+                    mat-icon-button 
+                    matSuffix 
+                    (click)="hide = !hide">
+                    <mat-icon>{{hide? "visibility_off": "visibility"}}</mat-icon>
+                </button>
+                <mat-hint align="start">Minimum: 7 charactères</mat-hint>
+                <mat-hint align="end" *ngIf="mdpForm.get('mdp')?.value?.length!=0">
+                    <span>
+                        Status:
+                    </span>
+                    <span 
+                        *ngIf="
+                        mdpForm.get('mdp')?.value?.length < 7 && 
+                        mdpForm.get('mdp')?.value?.length > 0
+                        "
+                        style="color: red; font-weight: bold;"
+                        >mauvais
+                    </span>
+                    <span 
+                        *ngIf="mdpForm.get('mdp')?.value?.length< 10 && 
+                        mdpForm.get('mdp')?.value?.length>=7"
+                        style="color: green; font-weight: bold;"
+                        >moyenne
+                    </span>
+                    <span 
+                        *ngIf="mdpForm.get('mdp')?.value?.length>=10"
+                        style="color: blue; font-weight: bold;"
+                        >excellent
+                    </span>
+                </mat-hint>
+                <mat-error 
+                    *ngIf="mdpForm.get('mdp')?.value?.length === 0"
+                    >Veuillez entrer  une mot de passe</mat-error>
+                <mat-error 
+                    *ngIf="mdpForm.get('mdp')?.value?.length < 7 && mdpForm.get('mdp')?.value?.length > 0"
+                    >Mot de passe trop courte
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field hideRequiredMarker="true" class="w-50 my-2 mb-">
+                <mat-label>Confirmer mot de passe: </mat-label>
+                <input matInput type="password" formControlName="vmdp">
+                <mat-icon matSuffix *ngIf="showMdpError$|async" class="float-end" color="warn">error</mat-icon>
+                <mat-error 
+                    *ngIf="mdpForm.get('vmdp')?.errors?.['required']"
+                    >Ce champ est requis</mat-error>
+            </mat-form-field>
+        </ng-container>
+        <div class="container m-0 p-0 w-50 ">
+            <button 
+                mat-button 
+                class="bg-secondary rounded-pill my-2 float-end text-white" 
+                type="submit" 
+                (click)="onSubmit()"
+                [disabled]="!form.valid">Valider</button>
+        </div>
+    </mat-card>
+</div>
