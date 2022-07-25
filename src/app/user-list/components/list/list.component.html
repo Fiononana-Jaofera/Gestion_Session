@@ -1,15 +1,15 @@
-<div class="container-fluid h-100 bg-secondary">
+<div class="container-fluid bg-secondary" style="height: 100%;">
     <div class="row" style="height: 10%;">
         <div class="col bg-secondary p-3 d-flex align-items-center text-center">
             <h1 class="text-white">Bonjour nom prénom</h1>
         </div>
     </div>
-    <div class="row bg-transparent" style="height: 90%;">
-        <mat-card class="col-2  p-3 rounded-2 mx-2 my-2">
+    <div class="row bg-transparent" style="height: 90%; overflow: hidden;">
+        <mat-card class="col-2  p-3 rounded-2 mx-2 my-2" style="height: 90%;">
             <app-menu></app-menu>
         </mat-card>
-        <div class="col mx-2 my-2">
-            <mat-card class="row mb-3" style="height: 80%;">
+        <div class="col mx-2 my-2" style="height: 100%;">
+            <mat-card class="row mb-3" style="height: 70%; overflow: auto;">
                 <table class="table table-hover" mat-table [dataSource]="dataSource">
                     <ng-container matColumnDef="Nom">
                         <th mat-header-cell *matHeaderCellDef> Nom </th>

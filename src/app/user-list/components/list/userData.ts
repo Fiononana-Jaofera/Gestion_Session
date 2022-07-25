@@ -30,6 +30,13 @@ export const users:User[] = [
         groupe: 'L3MISA'
     },
     {
+        nom: 'ANDRIANARIVONY',
+        prenom: 'Harijaona Fanirintsoa',
+        email: 'faniry@email.com',
+        password: '1234567890',
+        groupe: 'L3MISA'
+    },
+    {
         nom: 'ANDRIATIANA',
         prenom: 'Jean Marie',
         email: 'jeanmarie@email.com',
