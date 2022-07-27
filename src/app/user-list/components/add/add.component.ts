@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { User } from 'src/app/shared/models/user';
 
 @Component({
   selector: 'app-add',
@@ -9,7 +10,11 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class AddComponent implements OnInit {
 
-  constructor(private dialogRef: MatDialogRef<AddComponent>, private fb: FormBuilder) { }
+  constructor(
+    private dialogRef: MatDialogRef<AddComponent>, 
+    private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: User) { }
+
   optionList!:string[]
   userData!:FormGroup
   ngOnInit(): void {
@@ -32,6 +37,14 @@ export class AddComponent implements OnInit {
     this.dialogRef.close()
   }
   onSubmit(){
-    console.log(this.userData.value)
+    this.dialogRef.close({
+      data: {
+        nom: this.userData.get('nom')?.value,
+        prenom: this.userData.get('prenom')?.value,
+        email: this.userData.get('email')?.value,
+        groupe: this.userData.get('groupe')?.value
+      }
+    })
   }
+
 }

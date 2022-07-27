@@ -33,6 +33,9 @@ export class ListComponent implements OnInit {
       width: '500px',
       height: '500px'
     })
+    dialogRef.afterClosed().subscribe(res=>{
+      console.log(res.data)
+    })
   }
   
 }
