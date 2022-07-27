@@ -3,13 +3,15 @@ import { User } from 'src/app/shared/models/user';
 import { UserServiceService } from '../../services/user-service.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { AddComponent } from '../add/add.component';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
-  constructor(private userService: UserServiceService) { }
+  constructor(private userService: UserServiceService, private dialog: MatDialog) { }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator
 
@@ -26,4 +28,11 @@ export class ListComponent implements OnInit {
   ngAfterViewInit(){
     this.dataSource.paginator = this.paginator
   }
+  openDialog(): void {
+    const dialogRef = this.dialog.open(AddComponent, {
+      width: '500px',
+      height: '500px'
+    })
+  }
+  
 }

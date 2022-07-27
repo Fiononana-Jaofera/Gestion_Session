@@ -1,1 +1,33 @@
-<p>add works!</p>
+<ng-container>
+    <h2 mat-dialog-title>Nouveau utilisateur: </h2>
+    <mat-dialog-content [formGroup]="userData">
+        <mat-form-field appearance="fill" class="d-block" hideRequiredMarker="true">
+            <mat-label>Nom :</mat-label>
+            <input type="text" matInput formControlName="nom">
+            <mat-error>Ce champ ne doit pas être vide</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="d-block" hideRequiredMarker="true">
+            <mat-label>Prenom :</mat-label>
+            <input type="text" matInput formControlName="prenom">
+            <mat-error>Ce champ ne doit pas être vide</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="d-block" hideRequiredMarker="true">
+            <mat-label>Adresse email :</mat-label>
+            <input type="text" matInput formControlName="email">
+            <mat-error *ngIf="this.userData.get('email')?.errors?.['email']">Cette adresse email est invalid</mat-error>
+            <mat-error *ngIf="this.userData.get('email')?.errors?.['required']">Ce champ est requis</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="d-block" hideRequiredMarker="true">
+            <mat-label>Groupe :</mat-label>
+            <mat-select placeholder="Groupe" formControlName="groupe">
+                <mat-option>--None--</mat-option>
+                <mat-option *ngFor="let option of optionList" [value]="option">{{option}}</mat-option>
+            </mat-select>
+            <mat-error>Ce champ est requis</mat-error>
+        </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions class="d-flex justify-content-evenly my-3">
+        <button mat-button (click)="onNoClick()">Fermer</button>
+        <button type="submit" mat-button [disabled]="!userData.valid" (click)="onSubmit()">Valider</button>
+    </mat-dialog-actions>
+</ng-container>
