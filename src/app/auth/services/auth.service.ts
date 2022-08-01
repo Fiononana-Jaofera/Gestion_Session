@@ -10,6 +10,6 @@ export class AuthService {
     this.adminUrl = "http://localhost:3000/login"
   }
   verifyLogin(admin: Admin):Observable<Admin>{
-    return this.http.post<Admin>(this.adminUrl, admin)
+    return this.http.post<Admin>(this.adminUrl, JSON.stringify(admin))
   }
 }

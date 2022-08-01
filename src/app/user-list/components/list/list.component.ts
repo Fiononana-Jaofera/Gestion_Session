@@ -12,7 +12,10 @@ import { Observable } from 'rxjs';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
-  constructor(private userService: UserServiceService, private dialog: MatDialog) { }
+  constructor(
+    private userService: UserServiceService,
+    private dialog: MatDialog
+    ) { }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator
 

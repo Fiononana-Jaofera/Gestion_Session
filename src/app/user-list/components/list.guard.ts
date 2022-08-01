@@ -6,12 +6,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ListGuard implements CanActivate {
-  autorisation:boolean = false
+  autorisation!:boolean
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      console.log(route)
     return this.autorisation;
   }
-  
 }
