@@ -10,18 +10,18 @@ const server = http.createServer((req, res)=>{
             data += chunk
         })
         req.on('end', () => {
-            console.log(JSON.parse(data))
-            con.connect((err)=>{
-                if(err) throw err
+            let dataJson = JSON.parse(data)
                 con.query(
-                    "SELECT * FROM adminList",
+                    `SELECT * FROM admin WHERE Email = '${dataJson.email}' AND MotDePasse = '${dataJson.password}';`,
                     (err, result, fields) => {
                         if(err) throw err
-                        console.log(result)
+                        res.writeHead(200,{
+                            'Content-Type':'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        })
+                        res.end(JSON.stringify(result[0]))                        
                     }
                 )
-            })
-            res.end()
         })
     }
     else{
