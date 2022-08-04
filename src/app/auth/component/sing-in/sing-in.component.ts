@@ -24,10 +24,8 @@ export class SingInComponent implements OnInit {
   login!: FormGroup;
   hide!:boolean;
   admin!:Admin;
-  adminInvalid!:boolean;
   ngOnInit(): void {
     this.hide = true
-    this.adminInvalid = false
     this.initForm()
   }
   private initForm(){
@@ -39,18 +37,8 @@ export class SingInComponent implements OnInit {
     )
   }
   onSubmit(){    
-    this.authService.verifyLogin(this.login.value).subscribe(admin => {
-      this.admin = admin
-      console.log(typeof this.admin)
-      if(this.admin?.id){
-        console.log('value existant')
-        this.listGuard.autorisation = true
-        this.router.navigate(['/list'])
-      }
-      else{
-        console.log('value inexistant')
-        this.listGuard.autorisation = false
-      }
+    this.authService.verifyLogin(this.login.value).subscribe(response => {
+      console.log(response)
     })
   }
 }

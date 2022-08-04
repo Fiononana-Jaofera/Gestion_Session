@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { map, Observable } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 import { confirmEqual } from '../../validators/confirm-Equal.validators';
 
 @Component({
@@ -16,7 +17,10 @@ export class SignUpComponent implements OnInit {
   showMdpError$!:Observable<Boolean>
   hide!:boolean
 
-  constructor(private fb:FormBuilder) { }
+  constructor(
+    private fb:FormBuilder,
+    private authService: AuthService
+    ) { }
 
   ngOnInit(): void {
     this.hide = true
@@ -49,7 +53,16 @@ export class SignUpComponent implements OnInit {
     )
   }
   onSubmit(){
-    console.log(this.form.value)
+    this.authService.registerAdmin(
+      {
+        nom: this.form.get('nom')?.value,
+        prenom: this.form.get('prenom')?.value,
+        email: this.form.get('email')?.value,
+        motDePasse: this.form.get('password')?.get('mdp')?.value
+      }
+    ).subscribe(response =>{
+      console.log(response)
+    })
   }
 
 }

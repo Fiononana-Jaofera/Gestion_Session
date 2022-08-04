@@ -5,11 +5,16 @@ import { Admin } from '../models/admin';
 
 @Injectable()
 export class AuthService {
-  adminUrl:string
+  loginUrl:string
+  registerUrl:string
   constructor(private http: HttpClient) {
-    this.adminUrl = "http://localhost:3000/login"
+    this.loginUrl = "http://localhost:3000/login"
+    this.registerUrl = "http://localhost:3000/register"
   }
-  verifyLogin(admin: Admin):Observable<Admin>{
-    return this.http.post<Admin>(this.adminUrl, JSON.stringify(admin))
+  verifyLogin(admin: Admin):Observable<any>{
+    return this.http.post<any>(this.loginUrl, JSON.stringify(admin))
+  }
+  registerAdmin(admin: Admin):Observable<any>{
+    return this.http.post<any>(this.registerUrl, JSON.stringify(admin))
   }
 }
