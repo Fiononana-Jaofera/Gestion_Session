@@ -8,6 +8,7 @@ import { SharedModule } from '../shared/shared.module';
 import { CoreModule } from '../core/core.module';
 import { MenuComponent } from '../core/components/menu/menu.component';
 import { UserServiceService } from './services/user-service.service';
+import { AuthService } from '../auth/services/auth.service';
 
 
 @NgModule({
@@ -21,6 +22,6 @@ import { UserServiceService } from './services/user-service.service';
     SharedModule,
     CoreModule 
   ],
-  providers:[UserServiceService]
+  providers:[UserServiceService, AuthService]
 })
 export class UserListModule { }

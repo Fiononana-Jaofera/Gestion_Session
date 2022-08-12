@@ -6,6 +6,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { AddComponent } from '../add/add.component';
 import { Observable } from 'rxjs';
+import { Admin } from 'src/app/auth/models/admin';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -24,6 +25,7 @@ export class ListComponent implements OnInit {
   dataSource!:MatTableDataSource<User>
   ngOnInit(): void {
     this.userService.getUserFromServer()
+    
     this.userService.user$.subscribe((item)=>{
       this.listUser$ = new Observable(subscriber => {
         subscriber.next(item)

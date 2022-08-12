@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Admin } from '../models/admin';
-
 @Injectable()
 export class AuthService {
   loginUrl:string
   registerUrl:string
+  token = new BehaviorSubject<string>('')
   constructor(private http: HttpClient) {
     this.loginUrl = "http://localhost:3000/login"
     this.registerUrl = "http://localhost:3000/register"

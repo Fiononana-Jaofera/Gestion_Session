@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { Admin } from '../../models/admin';
 import { AuthService } from '../../services/auth.service';
 import { ListGuard } from 'src/app/user-list/components/list.guard';
-import { isEmpty } from 'rxjs';
 
 @Component({
   selector: 'app-sing-in',
@@ -38,7 +37,14 @@ export class SingInComponent implements OnInit {
   }
   onSubmit(){    
     this.authService.verifyLogin(this.login.value).subscribe(response => {
-      console.log(response)
+      if(response.token){
+        this.authService.token.next(response.token)
+        this.listGuard.autorisation = true
+        this.router.navigate(['/list'])
+      }
+      else{
+        this.listGuard.autorisation = false
+      }
     })
   }
 }

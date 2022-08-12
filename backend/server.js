@@ -13,7 +13,6 @@ const server = http.createServer((req, res)=>{
         res.writeHead(400)
         res.end('<h1>error 404</h1>')
     }
-
 })
 
 server.listen(port, ()=>{
