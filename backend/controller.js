@@ -57,7 +57,6 @@ module.exports = {
     login: (req, res)=>{
         let data = ''
         req.on('data', chunk => {
-            console.log(`Data chunk available: ${chunk}`)
             data += chunk
         })
         req.on('end', () => {
@@ -106,7 +105,7 @@ module.exports = {
             }))
         }
         con.query(
-            `SELECT nom, prenom FROM admin WHERE id = ${adminId};`,
+            `SELECT nom, prenom, id FROM admin WHERE id = ${adminId};`,
             (err, result, fields) => {
                 if (err) throw err
                 con.query(
@@ -122,5 +121,51 @@ module.exports = {
                 )
             }
         )
+    },
+    insertUser: (req, res) => {
+        let headerAuth = req.headers['authorization']
+        console.log(headerAuth)
+        let adminId = jwtUtils.getAdminId(headerAuth)
+        console.log(adminId)
+        let data = ''
+        req.on('data', chunk => {
+            console.log(`Data chunk available: ${chunk}`)
+            data+=chunk
+        })
+        console.log(data)
+        // req.on('end', ()=>{
+        //     // let dataJson = JSON.parse(data)
+        //     con.query(
+        //         `SELECT email FROM admin WHERE email= '${dataJson.email}' UNION ALL SELECT email FROM user WHERE email= '${dataJson.email}';`,
+        //         (err, result, fields)=>{
+        //             if(err) throw err
+        //             if(result.length ==1){
+        //                 res.writeHead(200, header)
+        //                 res.end(JSON.stringify({
+        //                     'status':'email already exist'
+        //                 }))
+        //             }
+        //             else{
+        //                 con.query(
+        //                     `INSERT INTO user(nom, prenom, email, groupe, adminId)
+        //                     VALUES(
+        //                         '${dataJson.nom}',
+        //                         '${dataJson.prenom}',
+        //                         '${dataJson.email}',
+        //                         '${dataJson.groupe}',
+        //                         ${adminId}
+        //                     );`,
+        //                     (err, result, fields) => {
+        //                         if(err) throw err
+        //                         res.writeHead(200, header)
+        //                         res.end(JSON.stringify({
+        //                             'status': 'user saved in database'
+        //                         }))
+        //                     }
+        //                 )
+        //             }
+        //         }
+        //     )
+        // })
     }
 }

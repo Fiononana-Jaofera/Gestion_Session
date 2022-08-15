@@ -42,9 +42,18 @@ export class ListComponent implements OnInit {
       height: '500px'
     })
     dialogRef.afterClosed().subscribe(res=>{
-      this.listUser.asObservable().subscribe(item => {
-        item.push(res.data)
-        this.dataSource = new MatTableDataSource<User>(item)
+      console.log(res.data)
+      this.adminService.insertNewUser(res.data).subscribe(response =>{
+        console.log(response)
+        // if(response.status == 'user saved in database'){
+        //   this.listUser.asObservable().subscribe(item => {
+        //     item.push(res.data)
+        //     this.dataSource = new MatTableDataSource<User>(item)
+        //   })
+        // }
+        // else if(response.status == 'email already exist'){
+        //   alert('Veuillez inserez une autre adresse email')
+        // }
       })
     })
   }
@@ -59,5 +68,5 @@ export class ListComponent implements OnInit {
       )
     })
   }
-  
+
 }
