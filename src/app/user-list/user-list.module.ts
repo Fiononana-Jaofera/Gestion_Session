@@ -9,6 +9,7 @@ import { CoreModule } from '../core/core.module';
 import { MenuComponent } from '../core/components/menu/menu.component';
 import { UserServiceService } from './services/user-service.service';
 import { AuthService } from '../auth/services/auth.service';
+import { AdminService } from '../shared/services/admin/admin.service';
 
 
 @NgModule({
@@ -22,6 +23,6 @@ import { AuthService } from '../auth/services/auth.service';
     SharedModule,
     CoreModule 
   ],
-  providers:[UserServiceService, AuthService]
+  providers:[UserServiceService, AuthService, AdminService]
 })
 export class UserListModule { }

@@ -19,6 +19,7 @@ export class AdminService {
   public getAdminFromServer(){
     this.http.get<any>(this.adminUrl).subscribe(data => {
       console.log(data)
+      this._admin.next(data)
     })
   }
 }

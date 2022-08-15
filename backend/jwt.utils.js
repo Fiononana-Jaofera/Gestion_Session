@@ -12,4 +12,19 @@ module.exports = {
             expiresIn: '60000',
         })
     },
+    parseAuthorization: (authorization)=>{
+        return (authorization!=null)? authorization.replace('Bearer ', ''): null
+    },
+    getAdminId: (authorization)=>{
+        let adminId = -1
+        let token = module.exports.parseAuthorization(authorization)
+        if(token!=null){
+            try{
+                let jwtToken =  jwt.verify(token, JWT_SIGN_SECRET)
+                if(jwtToken != null)
+                    adminId =  jwtToken.adminId
+            } catch(err){}
+        }
+        return adminId;
+    }
 }

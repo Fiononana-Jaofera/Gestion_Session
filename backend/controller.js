@@ -80,7 +80,6 @@ module.exports = {
                                 if(resByCript){
                                     res.writeHead(200,header)
                                     res.end(JSON.stringify({
-                                        'adminId':result[0].id,
                                         'token': jwtUtils.generateTokenForAdmin(result[0].id)
                                     }))
                                 }
@@ -97,4 +96,32 @@ module.exports = {
             )
         })
     },
+    getAdmin: (req, res) => {
+        //get auth header
+        let headerAuth = req.headers['authorization']
+        let adminId = jwtUtils.getAdminId(headerAuth)
+        if (adminId < 0){
+            res.writeHead(400, header)
+            res.end(JSON.stringify({
+                'error': 'wrong token'
+            }))
+        }
+        con.query(
+            `SELECT nom, prenom FROM admin WHERE id = ${adminId};`,
+            (err, result, fields) => {
+                if (err) throw err
+                con.query(
+                    `SELECT * FROM user WHERE adminId = ${adminId};`,
+                    (err1, userData, fields2) => {
+                        if (err1) throw err1
+                        res.writeHead(200, header)
+                        res.end(JSON.stringify({
+                            'admin': result[0],
+                            'userList': userData[0]
+                        }))
+                    }
+                )
+            }
+        )
+    }
 }

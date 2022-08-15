@@ -9,6 +9,9 @@ const server = http.createServer((req, res)=>{
     else if(req.url === '/register'){
         controller.register(req, res)
     }
+    else if(req.url === '/getAdmin'){
+        controller.getAdmin(req, res)
+    }
     else{
         res.writeHead(400)
         res.end('<h1>error 404</h1>')
