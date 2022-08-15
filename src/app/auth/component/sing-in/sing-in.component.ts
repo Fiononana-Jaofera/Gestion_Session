@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { TokenService } from 'src/app/shared/services/token/token.service';
 import { Admin } from '../../models/admin';
 import { AuthService } from '../../services/auth.service';
-import { ListGuard } from 'src/app/user-list/components/list.guard';
 
 @Component({
   selector: 'app-sing-in',
@@ -16,9 +15,8 @@ export class SingInComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router,
     private authService: AuthService,
-    private listGuard: ListGuard
+    private tokenService: TokenService
     ) { }
   login!: FormGroup;
   hide!:boolean;
@@ -37,14 +35,7 @@ export class SingInComponent implements OnInit {
   }
   onSubmit(){    
     this.authService.verifyLogin(this.login.value).subscribe(response => {
-      if(response.token){
-        this.authService.token.next(response.token)
-        this.listGuard.autorisation = true
-        this.router.navigate(['/list'])
-      }
-      else{
-        this.listGuard.autorisation = false
-      }
+      this.tokenService.saveToken(response.token)
     })
   }
 }

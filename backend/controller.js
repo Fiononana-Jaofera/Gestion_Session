@@ -43,7 +43,7 @@ module.exports = {
                                         if(err) throw err
                                         res.writeHead(201,header)
                                         res.end(JSON.stringify({
-                                            'adminId':result.insertId
+                                            'token': jwtUtils.generateTokenForAdmin(result.insertId)
                                         }))                    
                                     }
                                 )
@@ -81,7 +81,7 @@ module.exports = {
                                     res.writeHead(200,header)
                                     res.end(JSON.stringify({
                                         'adminId':result[0].id,
-                                        'token': jwtUtils.generateTokenForAdmin(result[0])
+                                        'token': jwtUtils.generateTokenForAdmin(result[0].id)
                                     }))
                                 }
                                 else{
