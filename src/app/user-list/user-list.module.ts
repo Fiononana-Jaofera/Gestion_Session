@@ -6,8 +6,6 @@ import { ListComponent } from './components/list/list.component';
 import { AddComponent } from './components/add/add.component';
 import { SharedModule } from '../shared/shared.module';
 import { CoreModule } from '../core/core.module';
-import { MenuComponent } from '../core/components/menu/menu.component';
-import { UserServiceService } from './services/user-service.service';
 import { AuthService } from '../auth/services/auth.service';
 import { AdminService } from '../shared/services/admin/admin.service';
 
@@ -23,6 +21,6 @@ import { AdminService } from '../shared/services/admin/admin.service';
     SharedModule,
     CoreModule 
   ],
-  providers:[UserServiceService, AuthService, AdminService]
+  providers:[AuthService, AdminService]
 })
 export class UserListModule { }

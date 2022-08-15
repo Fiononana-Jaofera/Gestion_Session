@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from './material/material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { TokenInterceptorProvider } from './helpers/token.interceptor';
 
 @NgModule({
   declarations: [],
@@ -15,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
     MaterialModule,
     ReactiveFormsModule,
     HttpClientModule
-  ]
+  ],
+  providers: [TokenInterceptorProvider]
 })
 export class SharedModule { }

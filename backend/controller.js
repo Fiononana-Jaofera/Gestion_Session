@@ -5,8 +5,8 @@ const con = require('./db')
 const header = {
     'Content-Type':'application/json',
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With, Origin, X-Auth-Token'
 }
 
 module.exports = {
@@ -97,11 +97,10 @@ module.exports = {
         })
     },
     getAdmin: (req, res) => {
-        //get auth header
         let headerAuth = req.headers['authorization']
         let adminId = jwtUtils.getAdminId(headerAuth)
         if (adminId < 0){
-            res.writeHead(400, header)
+            res.writeHead(200, header)
             res.end(JSON.stringify({
                 'error': 'wrong token'
             }))
@@ -111,13 +110,13 @@ module.exports = {
             (err, result, fields) => {
                 if (err) throw err
                 con.query(
-                    `SELECT * FROM user WHERE adminId = ${adminId};`,
+                    `SELECT nom, prenom, email, groupe FROM user WHERE adminId = ${adminId};`,
                     (err1, userData, fields2) => {
                         if (err1) throw err1
                         res.writeHead(200, header)
                         res.end(JSON.stringify({
                             'admin': result[0],
-                            'userList': userData[0]
+                            'userList': userData
                         }))
                     }
                 )

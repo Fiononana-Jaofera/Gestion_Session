@@ -9,7 +9,7 @@ module.exports = {
         },
         JWT_SIGN_SECRET,
         {
-            expiresIn: '60000',
+            expiresIn: '3600000',
         })
     },
     parseAuthorization: (authorization)=>{
