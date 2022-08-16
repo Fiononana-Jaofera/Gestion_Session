@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../../models/user';
+import { TokenService } from '../token/token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ export class AdminService {
   addUrl:string
   private _admin = new BehaviorSubject<any>({})
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private tokenService: TokenService
   ) {
     this.profilUrl = "http://localhost:3000/getAdmin"
     this.addUrl = "http://localhost:3000/addUser"
@@ -24,7 +26,10 @@ export class AdminService {
       this._admin.next(data)
     })
   }
-  insertNewUser(user: User):Observable<any>{
-    return this.http.post<any>(this.addUrl, JSON.stringify(user))
+  insertNewUser(user: any):Observable<any>{
+    return this.http.post<any>(this.addUrl, JSON.stringify({
+      token: this.tokenService.getToken(),
+      newuser: user
+    }))
   }
 }

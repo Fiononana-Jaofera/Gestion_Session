@@ -7,6 +7,8 @@ import { AddComponent } from '../add/add.component';
 import { BehaviorSubject} from 'rxjs';
 import { Admin } from 'src/app/auth/models/admin';
 import { AdminService } from 'src/app/shared/services/admin/admin.service';
+import { TokenService } from 'src/app/shared/services/token/token.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -15,7 +17,8 @@ import { AdminService } from 'src/app/shared/services/admin/admin.service';
 export class ListComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private tokenService: TokenService,
     ) { }
   
   dataAdmin!:BehaviorSubject<Admin>
@@ -45,15 +48,15 @@ export class ListComponent implements OnInit {
       console.log(res.data)
       this.adminService.insertNewUser(res.data).subscribe(response =>{
         console.log(response)
-        // if(response.status == 'user saved in database'){
-        //   this.listUser.asObservable().subscribe(item => {
-        //     item.push(res.data)
-        //     this.dataSource = new MatTableDataSource<User>(item)
-        //   })
-        // }
-        // else if(response.status == 'email already exist'){
-        //   alert('Veuillez inserez une autre adresse email')
-        // }
+        if(response.status == 'user saved in database'){
+          this.listUser.asObservable().subscribe(item => {
+            item.push(res.data)
+            this.dataSource = new MatTableDataSource<User>(item)
+          })
+        }
+        else if(response.status == 'email already exist'){
+          alert('Veuillez inserez une autre adresse email')
+        }
       })
     })
   }
@@ -66,6 +69,7 @@ export class ListComponent implements OnInit {
       this.listUser.asObservable().subscribe(
         item => this.dataSource = new MatTableDataSource<User>(item)
       )
+      this.tokenService.startSession()
     })
   }
 

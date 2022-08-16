@@ -13,7 +13,7 @@ const server = http.createServer((req, res)=>{
         controller.getAdmin(req, res)
     }
     else if(req.url === '/addUser'){
-        controller.insertUser(req, res)
+        controller.newUser(req, res)
     }
     else{
         res.writeHead(400)
