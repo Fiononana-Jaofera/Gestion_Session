@@ -8,7 +8,7 @@ import { BehaviorSubject} from 'rxjs';
 import { Admin } from 'src/app/auth/models/admin';
 import { AdminService } from 'src/app/shared/services/admin/admin.service';
 import { TokenService } from 'src/app/shared/services/token/token.service';
-import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -32,11 +32,6 @@ export class ListComponent implements OnInit {
   ngOnInit(): void {
     this.getDataFromServer()
     this.columnsToDisplay = ['Nom', 'Prenom', 'Groupe', 'email']
-    this.ngAfterViewInit()
-  }
-
-  ngAfterViewInit(){
-    this.dataSource.paginator = this.paginator
   }
 
   openDialog(): void {
@@ -45,13 +40,12 @@ export class ListComponent implements OnInit {
       height: '500px'
     })
     dialogRef.afterClosed().subscribe(res=>{
-      console.log(res.data)
       this.adminService.insertNewUser(res.data).subscribe(response =>{
-        console.log(response)
         if(response.status == 'user saved in database'){
           this.listUser.asObservable().subscribe(item => {
             item.push(res.data)
             this.dataSource = new MatTableDataSource<User>(item)
+            this.dataSource.paginator = this.paginator
           })
         }
         else if(response.status == 'email already exist'){
@@ -67,9 +61,15 @@ export class ListComponent implements OnInit {
       this.dataAdmin = new BehaviorSubject<Admin>(Response.admin)
       this.listUser = new BehaviorSubject<User[]>(Response.userList)
       this.listUser.asObservable().subscribe(
-        item => this.dataSource = new MatTableDataSource<User>(item)
-      )
-      this.tokenService.startSession()
+        item => {
+          this.dataSource = new MatTableDataSource<User>(item)
+        }
+        )
+      console.log(this.tokenService.getDecodedAccessToken(this.tokenService.getToken()).exp*1000-Date.now())
+
+      setTimeout(()=>{
+        this.tokenService.clearToken()
+      }, this.tokenService.getDecodedAccessToken(this.tokenService.getToken()).exp*1000-Date.now())
     })
   }
 
