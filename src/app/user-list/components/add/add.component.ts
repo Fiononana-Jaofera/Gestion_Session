@@ -19,9 +19,8 @@ export class AddComponent implements OnInit {
   userData!:FormGroup
   ngOnInit(): void {
     this.optionList=[
-      "L3-MISA",
-      "M1-MISA",
-      "M2-MISA",
+      "user",
+      "admin",
     ]
     this.initForm()
   }
@@ -30,7 +29,8 @@ export class AddComponent implements OnInit {
       nom: ['', Validators.required],
       prenom: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      groupe: ['', Validators.required]
+      groupe: ['', Validators.required],
+      motDePasse: ['', Validators.required]
     })
   }
   onNoClick():void{
@@ -42,7 +42,8 @@ export class AddComponent implements OnInit {
         nom: this.userData.get('nom')?.value,
         prenom: this.userData.get('prenom')?.value,
         email: this.userData.get('email')?.value,
-        groupe: this.userData.get('groupe')?.value
+        groupe: this.userData.get('groupe')?.value,
+        motDePasse: this.userData.get('motDePasse')?.value
       }
     })
   }

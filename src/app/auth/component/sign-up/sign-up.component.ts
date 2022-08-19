@@ -19,6 +19,8 @@ export class SignUpComponent implements OnInit {
   mdpForm!:FormGroup
   showMdpError$!:Observable<Boolean>
   hide!:boolean
+  optionList!:string[]
+
 
   constructor(
     private fb:FormBuilder,
@@ -30,6 +32,9 @@ export class SignUpComponent implements OnInit {
     this.hide = true
     this.mainForm()
     this.initObservable()
+    this.optionList=[
+      "user"
+    ]
   }
 
   initForm(): void{
@@ -47,6 +52,7 @@ export class SignUpComponent implements OnInit {
     this.form = this.fb.group({
       nom: ['', Validators.required],
       prenom: ['', Validators.required],
+      groupe: ['', Validators.required],
       email: ['',[Validators.required, Validators.email]],
       password: this.mdpForm
     })
@@ -61,6 +67,7 @@ export class SignUpComponent implements OnInit {
       {
         nom: this.form.get('nom')?.value,
         prenom: this.form.get('prenom')?.value,
+        groupe: this.form.get('groupe')?.value,
         email: this.form.get('email')?.value,
         motDePasse: this.form.get('password')?.get('mdp')?.value
       }

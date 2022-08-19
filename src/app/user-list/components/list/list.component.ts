@@ -8,6 +8,7 @@ import { BehaviorSubject} from 'rxjs';
 import { Admin } from 'src/app/auth/models/admin';
 import { AdminService } from 'src/app/shared/services/admin/admin.service';
 import { TokenService } from 'src/app/shared/services/token/token.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list',
@@ -19,6 +20,7 @@ export class ListComponent implements OnInit {
     private dialog: MatDialog,
     private adminService: AdminService,
     private tokenService: TokenService,
+    private router: Router
     ) { }
   
   dataAdmin!:BehaviorSubject<Admin>
@@ -58,18 +60,18 @@ export class ListComponent implements OnInit {
   getDataFromServer(){
     this.adminService.getAdminFromServer()
     this.adminService.Admin$.subscribe(Response=>{
-      this.dataAdmin = new BehaviorSubject<Admin>(Response.admin)
+      console.log(Response)
+      if(Response.authorization == false){ 
+        this.tokenService.clearToken()
+        this.router.navigate(['/signIn'])
+      }
+      this.dataAdmin = new BehaviorSubject<Admin>(Response.user)
       this.listUser = new BehaviorSubject<User[]>(Response.userList)
       this.listUser.asObservable().subscribe(
         item => {
           this.dataSource = new MatTableDataSource<User>(item)
         }
         )
-      console.log(this.tokenService.getDecodedAccessToken(this.tokenService.getToken()).exp*1000-Date.now())
-
-      setTimeout(()=>{
-        this.tokenService.clearToken()
-      }, this.tokenService.getDecodedAccessToken(this.tokenService.getToken()).exp*1000-Date.now())
     })
   }
 

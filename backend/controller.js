@@ -19,7 +19,7 @@ module.exports = {
         req.on('end', () => {
             let dataJson = JSON.parse(data)
             con.query(
-                `SELECT email FROM admin WHERE email='${dataJson.email}';`,
+                `SELECT email FROM userList WHERE email='${dataJson.email}';`,
                 (err, result, fields) =>{
                     if (err) throw err
                     if(result.length == 1){
@@ -32,95 +32,98 @@ module.exports = {
                             10, 
                             (err, bcryptPassword)=>{
                                 con.query(
-                                    `INSERT INTO admin(nom, prenom, email, motDePasse) 
+                                    `INSERT INTO userList(nom, prenom, groupe, email, motDePasse) 
                                     VALUES(
                                         '${dataJson.nom}', 
                                         '${dataJson.prenom}',
+                                        '${dataJson.groupe}',
                                         '${dataJson.email}',
                                         '${bcryptPassword}'
                                     );`,
                                     (err, result, fields) => {
                                         if(err) throw err
+                                        global = Date.now()
                                         res.writeHead(201,header)
                                         res.end(JSON.stringify({
-                                            'token': jwtUtils.generateTokenForAdmin(result.insertId)
-                                        }))                    
-                                    }
-                                )
-                            }
-                        )
-                    }
-                }
-            )
-        })
+                                            'token': jwtUtils.generateTokenForUser(result.insertId)
+                                        }))})})}})})
     },
     login: (req, res)=>{
         let data = ''
         req.on('data', chunk => {
+            console.log(`Data chunk available ${chunk}`)
             data += chunk
         })
         req.on('end', () => {
             let dataJson = JSON.parse(data)
             con.query(
-                `SELECT * FROM admin WHERE email = '${dataJson.email}';`,
+                `SELECT * FROM userList WHERE email = '${dataJson.email}';`,
                 (err, result, fields) => {
                     if(err) throw err
                     if(result.length == 0){
                         res.writeHead(404,header)
                         res.end(JSON.stringify({
-                            'error':'admin not exist in Data Base'
+                            'error':'User not found'
                         }))
                     }
                     else{
+                        console.log('email found')
                         bcrypt.compare(
                             dataJson.password, 
                             result[0].motDePasse,
                             (errByCript, resByCript) => {
                                 if(resByCript){
+                                    global = Date.now()
+                                    console.log('I return the token')
                                     res.writeHead(200,header)
                                     res.end(JSON.stringify({
-                                        'token': jwtUtils.generateTokenForAdmin(result[0].id)
+                                        'token': jwtUtils.generateTokenForUser(result[0].id)
                                     }))
                                 }
                                 else{
                                     res.writeHead(403,header)
                                     res.end(JSON.stringify({
                                         'error':'invalid password'
-                                    }))
-                                }
-                            }
-                        )
-                    }                    
-                }
-            )
-        })
+                                    }))}})}})}) 
     },
-    getAdmin: (req, res) => {
+    getUser: (req, res) => {
         let headerAuth = req.headers['authorization']
-        let adminId = jwtUtils.getAdminId(headerAuth)
-        if (adminId < 0){
+        let userId = jwtUtils.getUserId(headerAuth)
+        let authorization = true
+        if (userId < 0){
             res.writeHead(200, header)
             res.end(JSON.stringify({
                 'error': 'wrong token'
             }))
         }
         con.query(
-            `SELECT nom, prenom, id FROM admin WHERE id = ${adminId};`,
+            `SELECT userList.nom, userList.prenom, userList.groupe, userSession.Session FROM userList INNER JOIN userSession ON userList.id = userSession.userId WHERE id = ${userId};`,
             (err, result, fields) => {
                 if (err) throw err
                 con.query(
-                    `SELECT nom, prenom, email, groupe FROM user WHERE adminId = ${adminId};`,
+                    `SELECT nom, prenom, email, groupe FROM userList;`,
                     (err1, userData, fields2) => {
                         if (err1) throw err1
-                        res.writeHead(200, header)
-                        res.end(JSON.stringify({
-                            'admin': result[0],
-                            'userList': userData
-                        }))
-                    }
-                )
-            }
-        )
+                        else if(result.length!=0 && userData.length!=0){
+                            if(result[0].Session*60*1000 > Date.now()-global){
+                                console.log(`authorization: ${authorization}`) 
+                                res.writeHead(200, header)
+                                res.end(JSON.stringify({
+                                    'user': result[0],
+                                    'authorization': authorization,
+                                    'userList': userData
+                                }))}
+                            else {
+                                authorization = false
+                                global = 0
+                                console.log(`authorization: ${authorization}`)
+                                res.writeHead(200, header)
+                                res.end(JSON.stringify({
+                                    'authorization': authorization,
+                                }))
+                            }
+                        }
+                        })})
     },
     newUser: (req, res)=>{
         let data = ''
@@ -130,10 +133,8 @@ module.exports = {
         })
         req.on('end', ()=>{
             let dataJson = JSON.parse(data)
-            let adminId = jwtUtils.getAdminId(dataJson.token)
-            console.log(adminId)
             con.query(
-                `SELECT email FROM admin WHERE email= '${dataJson.newuser.email}' UNION ALL SELECT email FROM user WHERE email= '${dataJson.newuser.email}';`,
+                `SELECT email FROM userList WHERE email= '${dataJson.newuser.email}';`,
                 (err, result, fields)=>{
                     if(err) throw err
                     if(result.length ==1){
@@ -143,26 +144,25 @@ module.exports = {
                         }))
                     }
                     else{
-                        con.query(
-                            `INSERT INTO user(nom, prenom, email, groupe, adminId)
-                            VALUES(
-                                '${dataJson.newuser.nom}',
-                                '${dataJson.newuser.prenom}',
-                                '${dataJson.newuser.email}',
-                                '${dataJson.newuser.groupe}',
-                                ${adminId}
-                            );`,
-                            (err, result, fields) => {
-                                if(err) throw err
-                                res.writeHead(200, header)
-                                res.end(JSON.stringify({
-                                    'status': 'user saved in database'
-                                }))
-                            }
-                        )
-                    }
-                }
-            )
-        })
+                        bcrypt.hash(
+                            dataJson.newuser.motDePasse,
+                            10,
+                            (err, bcryptPassword)=>{
+
+                                con.query(
+                                    `INSERT INTO userList(nom, prenom, email, groupe, motDePasse)
+                                    VALUES(
+                                        '${dataJson.newuser.nom}',
+                                        '${dataJson.newuser.prenom}',
+                                        '${dataJson.newuser.email}',
+                                        '${dataJson.newuser.groupe}',
+                                        '${bcryptPassword}'
+                                    );`,
+                                    (err, result, fields) => {
+                                        if(err) throw err
+                                        res.writeHead(200, header)
+                                        res.end(JSON.stringify({
+                                            'status': 'user saved in database'
+                                        }))})})}})})
     }
 }

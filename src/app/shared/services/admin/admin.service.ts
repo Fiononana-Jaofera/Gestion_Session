@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { TokenService } from '../token/token.service';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class AdminService {
     this.addUrl = "http://localhost:3000/addUser"
   }
   get Admin$():Observable<any>{
-    return this._admin.asObservable()
+    return this._admin
   }
   public getAdminFromServer(){
     this.http.get<any>(this.profilUrl).pipe(tap(data=>{

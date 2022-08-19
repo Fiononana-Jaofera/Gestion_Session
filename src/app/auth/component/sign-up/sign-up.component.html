@@ -68,6 +68,14 @@
                     *ngIf="mdpForm.get('vmdp')?.errors?.['required']"
                     >Ce champ est requis</mat-error>
             </mat-form-field>
+            <mat-form-field appearance="fill" class="d-block" hideRequiredMarker="true">
+                <mat-label>Groupe :</mat-label>
+                <mat-select placeholder="Groupe" formControlName="groupe">
+                    <mat-option>--None--</mat-option>
+                    <mat-option *ngFor="let option of optionList" [value]="option">{{option}}</mat-option>
+                </mat-select>
+                <mat-error>Ce champ est requis</mat-error>
+            </mat-form-field>
         </ng-container>
         <div class="container m-0 p-0 w-50 ">
             <button 

@@ -10,7 +10,7 @@ const server = http.createServer((req, res)=>{
         controller.register(req, res)
     }
     else if(req.url === '/getAdmin'){
-        controller.getAdmin(req, res)
+        controller.getUser(req, res)
     }
     else if(req.url === '/addUser'){
         controller.newUser(req, res)

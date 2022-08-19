@@ -25,6 +25,11 @@
             </mat-select>
             <mat-error>Ce champ est requis</mat-error>
         </mat-form-field>
+        <mat-form-field appearance="fill" class="d-block" hideRequiredMarker="true">
+            <mat-label>Mot de passe temporaire :</mat-label>
+            <input type="text" matInput formControlName="motDePasse">
+            <mat-error *ngIf="this.userData.get('motDePasse')?.errors?.['required']">Ce champ est requis</mat-error>
+        </mat-form-field>
     </mat-dialog-content>
     <mat-dialog-actions class="d-flex justify-content-evenly my-3">
         <button mat-button (click)="onNoClick()">Fermer</button>
