@@ -43,18 +43,16 @@ module.exports = {
                                         '${bcryptPassword}'
                                     );`,
                                     (userErr, userResult, userFields) => {
-                                        console.log(userResult)
                                         if(userErr) throw userErr
-                                        //Insert the user session in the database
-                                        // con.query(
-                                        //     `INSERT INTO userSession(userId) VALUES(${userResult[0].insertId});`,
-                                        //     (sessionErr, sessionResult, sessionfields) =>{
-                                        //         if(sessionErr) throw sessionErr
-                                        //         res.writeHead(201,header)
-                                        //         res.end(JSON.stringify({
-                                        //             'token': jwtUtils.generateTokenForUser(userResult.insertId, sessionResult.insertId)
-                                        //         }))})
-                                    })})}})})},
+                                        // Insert the user session in the database
+                                        con.query(
+                                            `INSERT INTO userSession(userId) VALUES(${userResult.insertId});`,
+                                            (sessionErr, sessionResult, sessionfields) =>{
+                                                if(sessionErr) throw sessionErr
+                                                res.writeHead(201,header)
+                                                res.end(JSON.stringify({
+                                                    'token': jwtUtils.generateTokenForUser(userResult.insertId, sessionResult.insertId)
+                                                }))})})})}})})},
     login: (req, res)=>{
         let data = ''
         req.on('data', chunk => {
@@ -81,12 +79,12 @@ module.exports = {
                             (errByCript, resByCript) => {
                                 if(resByCript){
                                     con.query(
-                                        `SELECT session FROM userSession WHERE id = ${userResult[0].id};`,
-                                        (sessionErr, sessionResult, sessionfields)=>{
-                                            if(sessionErr) throw sessionErr;
-                                            res.writeHead(200,header)
+                                        `INSERT INTO userSession(userId) VALUES(${userResult[0].id});`,
+                                        (sessionErr, sessionResult, sessionfields) =>{
+                                            if(sessionErr) throw sessionErr
+                                            res.writeHead(201,header)
                                             res.end(JSON.stringify({
-                                                'token': jwtUtils.generateTokenForUser(userResult[0].id, sessionResult[0].id)
+                                                'token': jwtUtils.generateTokenForUser(userResult[0].id, sessionResult.insertId)
                                             }))})}
                                 else{
                                     res.writeHead(403,header)
@@ -104,37 +102,40 @@ module.exports = {
             }))
         }
         con.query(
-            `SELECT userList.nom, userList.prenom, userList.groupe, userSession.session FROM userList INNER JOIN userSession ON userList.id = userSession.userId WHERE userList.id = ${userId};`,
+            `SELECT nom, prenom, groupe FROM userList WHERE id = ${userId}`,
             (userErr, userResult, fields) => {
                 if (userErr) throw userErr
                 //comparaison session
-                console.log(userResult)
-                // con.query(
-                //     `SELECT nom, prenom, email, groupe FROM userList;`,
-                //     (err1, userData, fields2) => {
-                //         if (err1) throw err1
-                //         else if(userResult.length!=0 && userData.length!=0){
-                //             if(userResult[0].Session*60*1000 > Date.now()-global){
-                //                 console.log(`authorization: ${authorization}`) 
-                //                 res.writeHead(200, header)
-                //                 res.end(JSON.stringify({
-                //                     'user': userResult[0],
-                //                     'authorization': authorization,
-                //                     'userList': userData
-                //                 }))}
-                //             else {
-                //                 authorization = false
-                //                 global = 0
-                //                 console.log(`authorization: ${authorization}`)
-                //                 res.writeHead(200, header)
-                //                 res.end(JSON.stringify({
-                //                     'authorization': authorization,
-                //                 }))
-                //             }
-                //         }
-                //         })
-            }
-                )
+                if(userResult.length!=0){
+                    con.query(
+                        `SELECT HOUR(session) as hour, MINUTE(session) as minute, SECOND(session) as second FROM userSession WHERE id=${sessionId}`,
+                        (sessionErr, sessionResult, sessionfields) =>{
+                            if (sessionErr) throw sessionErr;
+                            let sessionStart = ((sessionResult[0].hour*60 + sessionResult[0].minute)*60 + sessionResult[0].second)*1000
+                            console.log(`temp de login: ${sessionStart}`)
+                            let date = new Date()
+                            console.log(`nouveau date: ${date}`)
+                            let timeCurrent =((date.getHours()*60 + date.getMinutes())*60 + date.getSeconds())*1000
+                            console.log(`temp à l'instant: ${timeCurrent}`)
+                            let timeActive = 30*1000
+                            if(timeCurrent-sessionStart>timeActive){
+                                res.writeHead(200, header)
+                                res.end(JSON.stringify({
+                                    'status':'Session expired',
+                                    'authorization': false
+                                }))
+                            }
+                            else {
+                                con.query(
+                                    `SELECT nom, prenom, email, groupe FROM userList;`,
+                                    (listErr, listResult, listFields) =>{
+                                        if(listErr) throw listErr
+                                        res.writeHead(200, header)
+                                        res.end(JSON.stringify({
+                                            'user': userResult[0],
+                                            'userList': listResult,
+                                            'authorization': true
+                                        }))})}})}})
     },
     newUser: (req, res)=>{
         let data = ''
