@@ -38,7 +38,7 @@ export class ListComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(AddComponent, {
       width: '500px',
-      height: '500px'
+      height: '600px'
     })
     dialogRef.afterClosed().subscribe(res=>{
       this.adminService.insertNewUser(res.data).subscribe(response =>{

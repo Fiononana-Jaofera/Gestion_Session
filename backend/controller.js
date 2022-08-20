@@ -117,7 +117,7 @@ module.exports = {
                             console.log(`nouveau date: ${date}`)
                             let timeCurrent =((date.getHours()*60 + date.getMinutes())*60 + date.getSeconds())*1000
                             console.log(`temp à l'instant: ${timeCurrent}`)
-                            let timeActive = 5*60*1000
+                            let timeActive = 60*1000
                             if(timeCurrent-sessionStart>timeActive){
                                 res.writeHead(200, header)
                                 res.end(JSON.stringify({
