@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { TokenService } from 'src/app/shared/services/token/token.service';
-import { ListGuard } from 'src/app/user-list/components/list.guard';
 import { AuthService } from '../../services/auth.service';
 import { confirmEqual } from '../../validators/confirm-Equal.validators';
 

@@ -3,9 +3,10 @@ const jwt = require('jsonwebtoken')
 const JWT_SIGN_SECRET = 'kseriseur872363iser6sudfy5272isfehhOO866238rccker1hhu236'
 
 module.exports = {
-    generateTokenForUser: (id)=>{
+    generateTokenForUser: (userId, sessionId)=>{
         return jwt.sign({
-            userId: id
+            userId: userId,
+            sessionId: sessionId
         },
         JWT_SIGN_SECRET,
         )
@@ -23,6 +24,18 @@ module.exports = {
                     userId =  jwtToken.userId
             } catch(err){}
         }
-        return userId;
+        return userId
+    },
+    getSessionId: (authorization) => {
+        let sessionId = -1
+        let token = module.exports.parseAuthorization(authorization)
+        if(token!=null){
+            try{
+                let jwtToken = jwt.verify(token, JWT_SIGN_SECRET)
+                if(jwtToken!=null)
+                    sessionId = jwtToken.sessionId
+            } catch(err){}
+        }
+        return sessionId
     }
 }
