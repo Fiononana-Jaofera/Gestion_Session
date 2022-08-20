@@ -5,7 +5,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { AddComponent } from '../add/add.component';
 import { BehaviorSubject, Observable, Subscription} from 'rxjs';
-import { Admin } from 'src/app/auth/models/admin';
 import { AdminService } from 'src/app/shared/services/admin/admin.service';
 import { TokenService } from 'src/app/shared/services/token/token.service';
 import { Router } from '@angular/router';
@@ -24,7 +23,7 @@ export class ListComponent implements OnInit {
     ) { }
   
   dataAdmin!:Observable<any>
-  listUser!:Observable<User[]>
+  listUser:BehaviorSubject<User[]> = new BehaviorSubject<User[]>([])
 
   @ViewChild(MatPaginator) paginator!: MatPaginator
 
@@ -44,10 +43,10 @@ export class ListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res=>{
       this.adminService.insertNewUser(res.data).subscribe(response =>{
         if(response.status == 'user saved in database'){
-          this.listUser.subscribe(item => {
+          this.listUser.asObservable().subscribe(item => {
             item.push(res.data)
             this.dataSource = new MatTableDataSource<User>(item)
-            this.dataSource.paginator = this.paginator
+            this.dataSource.paginator = this.paginator;
           })
         }
         else if(response.status == 'email already exist'){
@@ -63,11 +62,10 @@ export class ListComponent implements OnInit {
               this.dataAdmin = new Observable<any>( myobserver =>{
                 myobserver.next(data.user)
               })
-              this.listUser = new Observable<User[]>( myobserver =>{
-                myobserver.next(data.userList)
-              })
-              this.listUser.subscribe(val =>{
+              this.listUser = new BehaviorSubject<User[]>(data.userList)
+              this.listUser.asObservable().subscribe(val =>{
                 this.dataSource = new MatTableDataSource<User>(val)
+                this.dataSource.paginator = this.paginator;
               })
             }
             else{
@@ -76,5 +74,4 @@ export class ListComponent implements OnInit {
               this.router.navigate(['/signIn'])
             }})
     }
-
 }
