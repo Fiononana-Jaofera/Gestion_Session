@@ -27,7 +27,10 @@
         </mat-form-field>
         <mat-form-field appearance="fill" class="d-block" hideRequiredMarker="true">
             <mat-label>Mot de passe temporaire :</mat-label>
-            <input type="text" matInput formControlName="motDePasse">
+            <input [type]="hide? 'password':'text'" matInput formControlName="motDePasse">
+            <button mat-icon-button matSuffix (click)="hide =!hide">
+                <mat-icon>{{hide? "visibility_off":"visibility"}}</mat-icon>
+            </button>
             <mat-error *ngIf="this.userData.get('motDePasse')?.errors?.['required']">Ce champ est requis</mat-error>
         </mat-form-field>
     </mat-dialog-content>

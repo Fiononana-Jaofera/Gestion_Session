@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { AddComponent } from '../add/add.component';
-import { BehaviorSubject} from 'rxjs';
+import { BehaviorSubject, Observable, Subscription} from 'rxjs';
 import { Admin } from 'src/app/auth/models/admin';
 import { AdminService } from 'src/app/shared/services/admin/admin.service';
 import { TokenService } from 'src/app/shared/services/token/token.service';
@@ -23,14 +23,14 @@ export class ListComponent implements OnInit {
     private router: Router
     ) { }
   
-  dataAdmin!:BehaviorSubject<Admin>
-  listUser!:BehaviorSubject<User[]>
+  dataAdmin!:Observable<any>
+  listUser!:Observable<User[]>
 
   @ViewChild(MatPaginator) paginator!: MatPaginator
 
   columnsToDisplay!:any
   dataSource!:MatTableDataSource<User>
-
+  subscription!:Subscription
   ngOnInit(): void {
     this.getDataFromServer()
     this.columnsToDisplay = ['Nom', 'Prenom', 'Groupe', 'email']
@@ -44,7 +44,7 @@ export class ListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res=>{
       this.adminService.insertNewUser(res.data).subscribe(response =>{
         if(response.status == 'user saved in database'){
-          this.listUser.asObservable().subscribe(item => {
+          this.listUser.subscribe(item => {
             item.push(res.data)
             this.dataSource = new MatTableDataSource<User>(item)
             this.dataSource.paginator = this.paginator
@@ -57,22 +57,24 @@ export class ListComponent implements OnInit {
     })
   }
 
-  getDataFromServer(){
-    this.adminService.getAdminFromServer()
-    this.adminService.Admin$.subscribe(Response=>{
-      console.log(Response)
-      if(Response.authorization == false){ 
-        this.tokenService.clearToken()
-        this.router.navigate(['/signIn'])
-      }
-      this.dataAdmin = new BehaviorSubject<Admin>(Response.user)
-      this.listUser = new BehaviorSubject<User[]>(Response.userList)
-      this.listUser.asObservable().subscribe(
-        item => {
-          this.dataSource = new MatTableDataSource<User>(item)
-        }
-        )
-    })
-  }
+    getDataFromServer(){
+      this.subscription = this.adminService.getAdminFromServer().subscribe(data => {
+            if(data.authorization == true){
+              this.dataAdmin = new Observable<any>( myobserver =>{
+                myobserver.next(data.user)
+              })
+              this.listUser = new Observable<User[]>( myobserver =>{
+                myobserver.next(data.userList)
+              })
+              this.listUser.subscribe(val =>{
+                this.dataSource = new MatTableDataSource<User>(val)
+              })
+            }
+            else{
+              this.subscription.unsubscribe()
+              this.tokenService.clearToken()
+              this.router.navigate(['/signIn'])
+            }})
+    }
 
 }

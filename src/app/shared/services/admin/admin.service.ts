@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { TokenService } from '../token/token.service';
 
 @Injectable({
@@ -9,7 +9,6 @@ import { TokenService } from '../token/token.service';
 export class AdminService {
   profilUrl:string
   addUrl:string
-  private _admin= new BehaviorSubject<any>({})
   constructor(
     private http: HttpClient,
     private tokenService: TokenService
@@ -17,13 +16,8 @@ export class AdminService {
     this.profilUrl = "http://localhost:3000/getAdmin"
     this.addUrl = "http://localhost:3000/addUser"
   }
-  get Admin$():Observable<any>{
-    return this._admin
-  }
-  public getAdminFromServer(){
-    this.http.get<any>(this.profilUrl).pipe(tap(data=>{
-      this._admin.next(data)
-    })).subscribe()
+  public getAdminFromServer():Observable<any>{
+    return this.http.get<any>(this.profilUrl)
   }
   insertNewUser(user: any):Observable<any>{
     return this.http.post<any>(this.addUrl, JSON.stringify({

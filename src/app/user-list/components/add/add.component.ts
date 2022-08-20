@@ -17,7 +17,9 @@ export class AddComponent implements OnInit {
 
   optionList!:string[]
   userData!:FormGroup
+  hide!: boolean
   ngOnInit(): void {
+    this.hide = true
     this.optionList=[
       "user",
       "admin",
